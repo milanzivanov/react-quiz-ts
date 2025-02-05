@@ -15,28 +15,37 @@ type QuestionState = {
   questions: QuestionData[];
   status: string;
   index: number;
+  answer: number | null;
 };
 
 const initialState: QuestionState = {
   questions: [],
   status: "loading",
-  index: 0
+  index: 0,
+  answer: null
 };
 
 export type QuestionAction = {
-  type: "dataReceived" | "dataError" | "start";
+  type: "dataReceived" | "dataError" | "start" | "newAnswer";
   payload?: QuestionData[];
 };
 
-export interface QuestionData {
+export type AnswerAction = {
+  type: "newAnswer";
+  payload: number;
+};
+
+export type SetStatusAction = QuestionAction | AnswerAction;
+
+export type QuestionData = {
   question: string;
   options: string[];
-  correct_answer: string;
+  correctOption: number;
   points: number;
   id: string;
-}
+};
 
-function reducer(state: QuestionState, action: QuestionAction): QuestionState {
+function reducer(state: QuestionState, action: SetStatusAction): QuestionState {
   switch (action.type) {
     case "dataReceived":
       return {
@@ -48,6 +57,8 @@ function reducer(state: QuestionState, action: QuestionAction): QuestionState {
       return { ...state, status: "error" };
     case "start":
       return { ...state, status: "active" };
+    case "newAnswer":
+      return { ...state, answer: action.payload as number };
     default:
       throw new globalThis.Error("Unknown action");
   }
@@ -55,10 +66,6 @@ function reducer(state: QuestionState, action: QuestionAction): QuestionState {
 
 // react quiz
 export default function App() {
-  // https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple
-  // https://opentdb.com/api.php?amount=10
-  // http://localhost:5000/questions
-
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const numQuestions = state.questions.length;
@@ -88,7 +95,13 @@ export default function App() {
         {state.status === "ready" && (
           <StartScreen numQuestions={numQuestions} dispatch={dispatch} />
         )}
-        {state.status === "active" && <Question question={question} />}
+        {state.status === "active" && (
+          <Question
+            question={question}
+            dispatch={dispatch}
+            answer={state.answer}
+          />
+        )}
       </Main>
     </div>
   );
