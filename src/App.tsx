@@ -12,6 +12,7 @@ import Question from "./components/Question";
 import "./index.css";
 import NextButton from "./components/NextButton";
 import Progress from "./components/Progress";
+import FinishScreen from "./components/FinishScreen";
 
 type QuestionState = {
   questions: QuestionData[];
@@ -19,6 +20,7 @@ type QuestionState = {
   index: number;
   answer: number | null;
   points: number;
+  highscore: number;
 };
 
 const initialState: QuestionState = {
@@ -26,11 +28,18 @@ const initialState: QuestionState = {
   status: "loading",
   index: 0,
   answer: null,
-  points: 0
+  points: 0,
+  highscore: 0
 };
 
 export type QuestionAction = {
-  type: "dataReceived" | "dataError" | "start" | "newAnswer" | "nextQuestion";
+  type:
+    | "dataReceived"
+    | "dataError"
+    | "start"
+    | "newAnswer"
+    | "nextQuestion"
+    | "finish";
   payload?: QuestionData[];
 };
 
@@ -79,6 +88,14 @@ function reducer(state: QuestionState, action: SetStatusAction): QuestionState {
         ...state,
         index: state.index + 1,
         answer: null
+      };
+
+    case "finish":
+      return {
+        ...state,
+        status: "finished",
+        highscore:
+          state.points > state.highscore ? state.points : state.highscore
       };
 
     default:
@@ -132,8 +149,21 @@ export default function App() {
               dispatch={dispatch}
               answer={state.answer}
             />
-            <NextButton dispatch={dispatch} answer={state.answer} />
+            <NextButton
+              dispatch={dispatch}
+              answer={state.answer}
+              index={state.index}
+              numQuestions={numQuestions}
+            />
           </>
+        )}
+
+        {state.status === "finished" && (
+          <FinishScreen
+            points={state.points}
+            maxPoints={maxPoints}
+            highscore={state.highscore}
+          />
         )}
       </Main>
     </div>
