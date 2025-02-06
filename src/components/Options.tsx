@@ -10,29 +10,26 @@ function Options({
   dispatch: Dispatch<SetStatusAction>;
   answer: number | null;
 }) {
-  // console.log(question.options);
-  console.log(answer);
-
   const hasAnswered = answer !== null;
 
   return (
     <div className="options">
-      {question.options.map((option: string, index: number) => (
-        <button
-          className={`btn btn-option ${answer === index ? "answer" : ""} ${
-            hasAnswered
-              ? index === question.correctOption
-                ? "correct"
-                : "wrong"
-              : ""
-          }`}
-          key={option}
-          disabled={hasAnswered}
-          onClick={() => dispatch({ type: "newAnswer", payload: index })}
-        >
-          {option}
-        </button>
-      ))}
+      {question.options.map((option: string, index: number) => {
+        const isAnswerCorrect = index === question.correctOption;
+        const isAnswerSelected = answer === index;
+        return (
+          <button
+            className={`btn btn-option ${isAnswerSelected ? "answer" : ""} ${
+              hasAnswered ? (isAnswerCorrect ? "correct" : "wrong") : ""
+            }`}
+            key={option}
+            disabled={hasAnswered}
+            onClick={() => dispatch({ type: "newAnswer", payload: index })}
+          >
+            {option}
+          </button>
+        );
+      })}
     </div>
   );
 }

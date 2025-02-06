@@ -11,7 +11,6 @@ function Question({
   dispatch: Dispatch<SetStatusAction>;
   answer: number | null;
 }) {
-  console.log(question);
   return (
     <div>
       <h4>{question.question}</h4>

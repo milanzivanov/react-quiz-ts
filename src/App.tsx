@@ -16,13 +16,15 @@ type QuestionState = {
   status: string;
   index: number;
   answer: number | null;
+  points: number;
 };
 
 const initialState: QuestionState = {
   questions: [],
   status: "loading",
   index: 0,
-  answer: null
+  answer: null,
+  points: 0
 };
 
 export type QuestionAction = {
@@ -58,7 +60,17 @@ function reducer(state: QuestionState, action: SetStatusAction): QuestionState {
     case "start":
       return { ...state, status: "active" };
     case "newAnswer":
-      return { ...state, answer: action.payload as number };
+      // eslint-disable-next-line no-case-declarations
+      const question = state.questions[state.index] as QuestionData;
+
+      return {
+        ...state,
+        answer: action.payload as number,
+        points:
+          action.payload === question.correctOption
+            ? state.points + question.points
+            : state.points
+      };
     default:
       throw new globalThis.Error("Unknown action");
   }
