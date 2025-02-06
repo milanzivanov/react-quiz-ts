@@ -11,6 +11,7 @@ import Question from "./components/Question";
 
 import "./index.css";
 import NextButton from "./components/NextButton";
+import Progress from "./components/Progress";
 
 type QuestionState = {
   questions: QuestionData[];
@@ -91,6 +92,7 @@ export default function App() {
 
   const numQuestions = state.questions.length;
   const question = state.questions[state.index] as QuestionData;
+  const maxPoints = state.questions.reduce((prev, cur) => prev + cur.points, 0);
 
   useEffect(function () {
     async function fetchData() {
@@ -118,6 +120,13 @@ export default function App() {
         )}
         {state.status === "active" && (
           <>
+            <Progress
+              index={state.index}
+              numQuestions={numQuestions}
+              points={state.points}
+              maxPoints={maxPoints}
+              answer={state.answer}
+            />
             <Question
               question={question}
               dispatch={dispatch}
