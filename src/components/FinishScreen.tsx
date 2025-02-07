@@ -1,11 +1,16 @@
+import { Dispatch } from "react";
+import { SetStatusAction } from "../App";
+
 function FinishScreen({
   points,
   maxPoints,
-  highscore
+  highscore,
+  dispatch
 }: {
   points: number;
   maxPoints: number;
   highscore: number;
+  dispatch: Dispatch<SetStatusAction>;
 }) {
   const percentage = Math.ceil((points / maxPoints) * 100);
 
@@ -27,6 +32,12 @@ function FinishScreen({
       <p className="highscore">
         (Highscore: <strong>{highscore}</strong> points)
       </p>
+      <button
+        className="btn btn-ui"
+        onClick={() => dispatch({ type: "restart" })}
+      >
+        Restart quiz
+      </button>
     </>
   );
 }

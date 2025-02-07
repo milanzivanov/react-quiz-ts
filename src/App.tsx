@@ -39,7 +39,8 @@ export type QuestionAction = {
     | "start"
     | "newAnswer"
     | "nextQuestion"
-    | "finish";
+    | "finish"
+    | "restart";
   payload?: QuestionData[];
 };
 
@@ -97,6 +98,21 @@ function reducer(state: QuestionState, action: SetStatusAction): QuestionState {
         highscore:
           state.points > state.highscore ? state.points : state.highscore
       };
+
+    case "restart":
+      return {
+        ...initialState,
+        questions: state.questions,
+        status: "ready"
+      };
+    // return {
+    //   ...state,
+    //   status: "ready",
+    //   index: 0,
+    //   answer: null,
+    //   points: 0,
+    //   highscore: 0
+    // };
 
     default:
       throw new globalThis.Error("Unknown action");
@@ -163,6 +179,7 @@ export default function App() {
             points={state.points}
             maxPoints={maxPoints}
             highscore={state.highscore}
+            dispatch={dispatch}
           />
         )}
       </Main>
