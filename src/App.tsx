@@ -16,6 +16,8 @@ import FinishScreen from "./components/FinishScreen";
 import Footer from "./components/Footer";
 import Timer from "./components/Timer";
 
+const SECONDS_PER_QUESTION = 30;
+
 type QuestionState = {
   questions: QuestionData[];
   status: string;
@@ -33,7 +35,7 @@ const initialState: QuestionState = {
   answer: null,
   points: 0,
   highscore: 0,
-  secondsRemaining: 10
+  secondsRemaining: 0
 };
 
 export type QuestionAction = {
@@ -75,7 +77,11 @@ function reducer(state: QuestionState, action: SetStatusAction): QuestionState {
     case "dataError":
       return { ...state, status: "error" };
     case "start":
-      return { ...state, status: "active" };
+      return {
+        ...state,
+        status: "active",
+        secondsRemaining: state.questions.length * SECONDS_PER_QUESTION
+      };
     case "newAnswer":
       // eslint-disable-next-line no-case-declarations
       const question = state.questions[state.index] as QuestionData;

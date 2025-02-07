@@ -8,10 +8,12 @@ function Timer({
   dispatch: Dispatch<SetStatusAction>;
   secondsRemaining: number;
 }) {
+  const minutes = Math.floor(secondsRemaining / 60);
+  const seconds = secondsRemaining % 60;
+
   useEffect(
     function () {
       const interval = setInterval(function () {
-        // console.log("Tik");
         dispatch({ type: "tick" });
       }, 1000);
 
@@ -20,6 +22,12 @@ function Timer({
     [dispatch]
   );
 
-  return <div className="timer">{secondsRemaining}</div>;
+  return (
+    <div className="timer">
+      {minutes < 10 && "0"}
+      {minutes}:{seconds < 10 && "0"}
+      {seconds}
+    </div>
+  );
 }
 export default Timer;
