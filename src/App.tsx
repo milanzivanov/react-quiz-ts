@@ -13,6 +13,8 @@ import "./index.css";
 import NextButton from "./components/NextButton";
 import Progress from "./components/Progress";
 import FinishScreen from "./components/FinishScreen";
+import Footer from "./components/Footer";
+import Timer from "./components/Timer";
 
 type QuestionState = {
   questions: QuestionData[];
@@ -21,6 +23,7 @@ type QuestionState = {
   answer: number | null;
   points: number;
   highscore: number;
+  secondsRemaining: number;
 };
 
 const initialState: QuestionState = {
@@ -29,7 +32,8 @@ const initialState: QuestionState = {
   index: 0,
   answer: null,
   points: 0,
-  highscore: 0
+  highscore: 0,
+  secondsRemaining: 10
 };
 
 export type QuestionAction = {
@@ -40,7 +44,8 @@ export type QuestionAction = {
     | "newAnswer"
     | "nextQuestion"
     | "finish"
-    | "restart";
+    | "restart"
+    | "tick";
   payload?: QuestionData[];
 };
 
@@ -114,6 +119,13 @@ function reducer(state: QuestionState, action: SetStatusAction): QuestionState {
     //   highscore: 0
     // };
 
+    case "tick":
+      return {
+        ...state,
+        secondsRemaining: state.secondsRemaining - 1,
+        status: state.secondsRemaining === 0 ? "finished" : state.status
+      };
+
     default:
       throw new globalThis.Error("Unknown action");
   }
@@ -165,12 +177,18 @@ export default function App() {
               dispatch={dispatch}
               answer={state.answer}
             />
-            <NextButton
-              dispatch={dispatch}
-              answer={state.answer}
-              index={state.index}
-              numQuestions={numQuestions}
-            />
+            <Footer>
+              <Timer
+                dispatch={dispatch}
+                secondsRemaining={state.secondsRemaining}
+              />
+              <NextButton
+                dispatch={dispatch}
+                answer={state.answer}
+                index={state.index}
+                numQuestions={numQuestions}
+              />
+            </Footer>
           </>
         )}
 
