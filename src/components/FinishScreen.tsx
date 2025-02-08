@@ -1,5 +1,5 @@
 import { Dispatch } from "react";
-import { SetStatusAction } from "../App";
+import { QuestionAction } from "../App";
 
 function FinishScreen({
   points,
@@ -10,7 +10,7 @@ function FinishScreen({
   points: number;
   maxPoints: number;
   highscore: number;
-  dispatch: Dispatch<SetStatusAction>;
+  dispatch: Dispatch<QuestionAction>;
 }) {
   const percentage = Math.ceil((points / maxPoints) * 100);
 

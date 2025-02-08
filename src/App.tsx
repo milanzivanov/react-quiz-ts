@@ -18,15 +18,33 @@ import Timer from "./components/Timer";
 
 const SECONDS_PER_QUESTION = 30;
 
+export type QuestionData = {
+  question: string;
+  options: string[];
+  correctOption: number;
+  points: number;
+  id: string;
+};
+
 type QuestionState = {
   questions: QuestionData[];
-  status: string;
+  status: "loading" | "error" | "ready" | "active" | "finished" | "tick";
   index: number;
   answer: number | null;
   points: number;
   highscore: number;
   secondsRemaining: number;
 };
+
+export type QuestionAction =
+  | { type: "dataReceived"; payload: QuestionData[] }
+  | { type: "dataError" }
+  | { type: "start" }
+  | { type: "newAnswer"; payload: number }
+  | { type: "nextQuestion" }
+  | { type: "finish" }
+  | { type: "restart" }
+  | { type: "tick" };
 
 const initialState: QuestionState = {
   questions: [],
@@ -38,40 +56,12 @@ const initialState: QuestionState = {
   secondsRemaining: 0
 };
 
-export type QuestionAction = {
-  type:
-    | "dataReceived"
-    | "dataError"
-    | "start"
-    | "newAnswer"
-    | "nextQuestion"
-    | "finish"
-    | "restart"
-    | "tick";
-  payload?: QuestionData[];
-};
-
-export type AnswerAction = {
-  type: "newAnswer";
-  payload: number;
-};
-
-export type SetStatusAction = QuestionAction | AnswerAction;
-
-export type QuestionData = {
-  question: string;
-  options: string[];
-  correctOption: number;
-  points: number;
-  id: string;
-};
-
-function reducer(state: QuestionState, action: SetStatusAction): QuestionState {
+function reducer(state: QuestionState, action: QuestionAction): QuestionState {
   switch (action.type) {
     case "dataReceived":
       return {
         ...state,
-        questions: action.payload ?? [],
+        questions: action.payload,
         status: "ready"
       };
     case "dataError":
@@ -88,7 +78,7 @@ function reducer(state: QuestionState, action: SetStatusAction): QuestionState {
 
       return {
         ...state,
-        answer: action.payload as number,
+        answer: action.payload,
         points:
           action.payload === question.correctOption
             ? state.points + question.points
@@ -106,8 +96,9 @@ function reducer(state: QuestionState, action: SetStatusAction): QuestionState {
       return {
         ...state,
         status: "finished",
-        highscore:
-          state.points > state.highscore ? state.points : state.highscore
+        // highscore:
+        //   state.points > state.highscore ? state.points : state.highscore
+        highscore: Math.max(state.points, state.highscore)
       };
 
     case "restart":
@@ -152,8 +143,7 @@ export default function App() {
         const data = await response.json();
         dispatch({ type: "dataReceived", payload: data });
         console.log(data);
-      } catch (error) {
-        console.log(error);
+      } catch {
         dispatch({ type: "dataError" });
       }
     }

@@ -1,5 +1,5 @@
 import { Dispatch } from "react";
-import { SetStatusAction } from "../App";
+import { QuestionAction } from "../App";
 
 function NextButton({
   dispatch,
@@ -7,7 +7,7 @@ function NextButton({
   index,
   numQuestions
 }: {
-  dispatch: Dispatch<SetStatusAction>;
+  dispatch: Dispatch<QuestionAction>;
   answer: number | null;
   index: number;
   numQuestions: number;

@@ -1,5 +1,5 @@
 import { Dispatch } from "react";
-import { SetStatusAction, QuestionData } from "../App";
+import { QuestionAction, QuestionData } from "../App";
 
 function Options({
   question,
@@ -7,7 +7,7 @@ function Options({
   answer
 }: {
   question: QuestionData;
-  dispatch: Dispatch<SetStatusAction>;
+  dispatch: Dispatch<QuestionAction>;
   answer: number | null;
 }) {
   const hasAnswered = answer !== null;

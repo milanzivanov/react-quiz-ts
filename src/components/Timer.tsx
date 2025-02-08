@@ -1,11 +1,11 @@
 import { Dispatch, useEffect } from "react";
-import { SetStatusAction } from "../App";
+import { QuestionAction } from "../App";
 
 function Timer({
   dispatch,
   secondsRemaining
 }: {
-  dispatch: Dispatch<SetStatusAction>;
+  dispatch: Dispatch<QuestionAction>;
   secondsRemaining: number;
 }) {
   const minutes = Math.floor(secondsRemaining / 60);

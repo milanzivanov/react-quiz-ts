@@ -1,5 +1,5 @@
 import Options from "./Options";
-import { SetStatusAction, QuestionData } from "../App";
+import { QuestionAction, QuestionData } from "../App";
 import { Dispatch } from "react";
 
 function Question({
@@ -8,13 +8,12 @@ function Question({
   answer
 }: {
   question: QuestionData;
-  dispatch: Dispatch<SetStatusAction>;
+  dispatch: Dispatch<QuestionAction>;
   answer: number | null;
 }) {
   return (
     <div>
       <h4>{question.question}</h4>
-
       <Options question={question} dispatch={dispatch} answer={answer} />
     </div>
   );
