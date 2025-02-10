@@ -136,10 +136,15 @@ export default function App() {
   const question = state.questions[state.index] as QuestionData;
   const maxPoints = state.questions.reduce((prev, cur) => prev + cur.points, 0);
 
+  // json-server
+  // https:localhost:5000/questions
+
   useEffect(function () {
     async function fetchData() {
       try {
-        const response = await fetch("http://localhost:5000/questions");
+        const response = await fetch(
+          "https://gist.githubusercontent.com/milanzivanov/2b6c26d729027f7c213c34ee9b25528a/raw/5f134d819b4aa99a4a474ec3ffd036ee4cdd6f6e/data.json"
+        );
         const data = await response.json();
         dispatch({ type: "dataReceived", payload: data });
         console.log(data);
